@@ -17,4 +17,7 @@ backend/config/*.local.properties
 .env.local
 .env.*.local
 *.secrets
-backend/.env.exemplo
+backend/.env.example
+
+
+.metadata

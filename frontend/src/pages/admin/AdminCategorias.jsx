@@ -26,20 +26,20 @@ export default function AdminCategorias() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-semibold text-slate-900">Categorias</h1>
-      {erro && <p className="mb-3 rounded bg-red-50 p-2 text-sm text-red-700">{erro}</p>}
-      <form onSubmit={criar} className="mb-6 flex gap-2">
-        <input required value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nova categoria"
-          className="w-full max-w-xs rounded border px-3 py-2" />
-        <button className="rounded bg-slate-900 px-4 py-2 text-white">Adicionar</button>
+      <h1 className="page-title mb-4">Categorias</h1>
+      {erro && <p className="alert-error mb-3">{erro}</p>}
+      <form onSubmit={criar} className="mb-6 flex max-w-md gap-2">
+        <input required value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nova categoria" className="input !mt-0" />
+        <button className="btn-primary">Adicionar</button>
       </form>
-      <ul className="divide-y rounded border bg-white">
+      <ul className="card divide-y divide-slate-100">
         {lista.map((c) => (
           <li key={c.id} className="flex items-center justify-between px-4 py-3">
-            <span className={c.ativa ? 'text-slate-900' : 'text-slate-400 line-through'}>{c.nome}</span>
-            <button onClick={() => alternar(c)} className="text-sm text-slate-600 hover:text-slate-900">
-              {c.ativa ? 'Desativar' : 'Ativar'}
-            </button>
+            <span className={c.ativa ? 'font-medium text-slate-900' : 'text-slate-400 line-through'}>{c.nome}</span>
+            <div className="flex items-center gap-3">
+              <span className={c.ativa ? 'badge-ok' : 'badge-off'}>{c.ativa ? 'Ativa' : 'Inativa'}</span>
+              <button onClick={() => alternar(c)} className="link text-sm">{c.ativa ? 'Desativar' : 'Ativar'}</button>
+            </div>
           </li>
         ))}
       </ul>

@@ -32,7 +32,7 @@ spring:
       mail.smtp.starttls.enable: ${MAIL_STARTTLS:false}
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:1111}
 
 management:
   endpoints:
@@ -48,8 +48,8 @@ app:
   jwt-expiration-minutes: ${JWT_EXPIRATION_MINUTES:480}
   storage: ${STORAGE:local}          # local (dev) | cloudinary (produção)
   admin:
-    email: ${ADMIN_EMAIL:sgpa.notificacoes@gmail.com}
-    password: ${ADMIN_PASSWORD:Mariodemario}
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
   order:
     max-quantity: ${MAX_QUANTITY_PER_ORDER:10}   # RN16: limite global por encomenda
 

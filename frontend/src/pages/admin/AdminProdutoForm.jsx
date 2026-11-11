@@ -63,53 +63,50 @@ export default function AdminProdutoForm() {
     catch (err) { setErro(err.message) }
   }
 
-  const campo = 'mt-1 w-full rounded border px-3 py-2'
   return (
-    <form onSubmit={submit} className="max-w-2xl space-y-4">
-      <h1 className="text-xl font-semibold text-slate-900">{editar ? 'Editar produto' : 'Novo produto'}</h1>
-      {erro && <p className="rounded bg-red-50 p-2 text-sm text-red-700">{erro}</p>}
+    <form onSubmit={submit} className="card max-w-2xl space-y-4 p-6">
+      <h1 className="page-title">{editar ? 'Editar produto' : 'Novo produto'}</h1>
+      {erro && <p className="alert-error">{erro}</p>}
 
-      <label className="block text-sm text-slate-700">Categoria
-        <select required value={form.categoriaId} onChange={set('categoriaId')} className={campo + ' bg-white'}>
+      <label className="label">Categoria
+        <select required value={form.categoriaId} onChange={set('categoriaId')} className="input">
           <option value="">Escolha a categoria</option>
           {categorias.filter((c) => c.ativa || c.id === form.categoriaId)
             .map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
         </select>
       </label>
-      <label className="block text-sm text-slate-700">Nome
-        <input required maxLength={150} value={form.nome} onChange={set('nome')} className={campo} />
+      <label className="label">Nome
+        <input required maxLength={150} value={form.nome} onChange={set('nome')} className="input" />
       </label>
-      <label className="block text-sm text-slate-700">Modelo / tipo (opcional)
-        <input maxLength={80} value={form.tipoModelo} onChange={set('tipoModelo')} className={campo}
-          placeholder="Ex.: Samsung Galaxy A15" />
+      <label className="label">Modelo / tipo (opcional)
+        <input maxLength={80} value={form.tipoModelo} onChange={set('tipoModelo')} className="input" placeholder="Ex.: Samsung Galaxy A15" />
       </label>
-      <label className="block text-sm text-slate-700">Descrição
-        <textarea rows={3} value={form.descricao} onChange={set('descricao')} className={campo} />
+      <label className="label">Descrição
+        <textarea rows={3} value={form.descricao} onChange={set('descricao')} className="input" />
       </label>
       <div className="grid gap-4 sm:grid-cols-3">
-        <label className="block text-sm text-slate-700">Preço (MZN)
-          <input required type="number" min="0.01" step="0.01" value={form.preco} onChange={set('preco')} className={campo} />
+        <label className="label">Preço (MZN)
+          <input required type="number" min="0.01" step="0.01" value={form.preco} onChange={set('preco')} className="input" />
         </label>
-        <label className="block text-sm text-slate-700">Stock
-          <input required type="number" min="0" step="1" value={form.stock} onChange={set('stock')} className={campo} />
+        <label className="label">Stock
+          <input required type="number" min="0" step="1" value={form.stock} onChange={set('stock')} className="input" />
         </label>
-        <label className="block text-sm text-slate-700">Máx. por encomenda
-          <input type="number" min="1" step="1" value={form.quantidadeMaxima} onChange={set('quantidadeMaxima')}
-            className={campo} placeholder="padrão" />
+        <label className="label">Máx. por encomenda
+          <input type="number" min="1" step="1" value={form.quantidadeMaxima} onChange={set('quantidadeMaxima')} className="input" placeholder="padrão" />
         </label>
       </div>
 
       {existentes.length > 0 && (
         <div>
-          <p className="mb-2 text-sm text-slate-700">Fotos atuais</p>
+          <p className="label mb-2">Fotos atuais</p>
           <div className="flex flex-wrap gap-3">
             {existentes.map((img) => (
               <div key={img.id} className="w-28 text-center text-xs">
-                <img src={img.url} alt="" className={`h-28 w-28 rounded object-cover ${img.principal ? 'ring-2 ring-slate-900' : ''}`} />
+                <img src={img.url} alt="" className={`h-28 w-28 rounded-lg object-cover ${img.principal ? 'ring-2 ring-accent-500' : ''}`} />
                 {img.principal
-                  ? <span className="font-medium text-slate-900">Principal</span>
-                  : <button type="button" onClick={() => tornarPrincipal(img)} className="text-slate-600 underline">Tornar principal</button>}
-                <button type="button" onClick={() => removerFoto(img)} className="block w-full text-red-600">Remover</button>
+                  ? <span className="badge bg-accent-100 text-accent-700">Principal</span>
+                  : <button type="button" onClick={() => tornarPrincipal(img)} className="link">Tornar principal</button>}
+                <button type="button" onClick={() => removerFoto(img)} className="btn-danger-ghost block w-full">Remover</button>
               </div>
             ))}
           </div>
@@ -117,23 +114,22 @@ export default function AdminProdutoForm() {
       )}
 
       <div>
-        <label className="block text-sm text-slate-700">
+        <label className="label">
           {editar ? 'Adicionar mais fotos' : 'Fotos do produto'} (JPG, PNG ou WebP, até 5 MB)
           <input type="file" multiple accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => setNovas(Array.from(e.target.files))} className="mt-1 block w-full text-sm" />
+            onChange={(e) => setNovas(Array.from(e.target.files))}
+            className="mt-1 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:font-semibold file:text-brand-700 hover:file:bg-brand-100" />
         </label>
         {previews.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-3">
-            {previews.map((p, i) => <img key={i} src={p.url} alt="" className="h-28 w-28 rounded object-cover" />)}
+            {previews.map((p, i) => <img key={i} src={p.url} alt="" className="h-28 w-28 rounded-lg object-cover" />)}
           </div>
         )}
       </div>
 
       <div className="flex gap-3 pt-2">
-        <button disabled={loading} className="rounded bg-slate-900 px-5 py-2 text-white disabled:opacity-50">
-          {loading ? 'A guardar...' : 'Guardar'}
-        </button>
-        <button type="button" onClick={() => navigate('/admin')} className="rounded border px-5 py-2">Cancelar</button>
+        <button disabled={loading} className="btn-primary">{loading ? 'A guardar...' : 'Guardar'}</button>
+        <button type="button" onClick={() => navigate('/admin')} className="btn-outline">Cancelar</button>
       </div>
     </form>
   )
