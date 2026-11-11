@@ -1,0 +1,19 @@
+# Dependências e build
+target/
+node_modules/
+dist/
+*.log
+.idea/
+.vscode/
+
+# Fotos locais (desenvolvimento)
+uploads/
+backend/uploads/
+
+# SEGREDOS: dados da base de dados, JWT, admin, Cloudinary, email
+backend/config/secrets.properties
+backend/config/*.local.properties
+.env
+.env.local
+.env.*.local
+*.secrets
