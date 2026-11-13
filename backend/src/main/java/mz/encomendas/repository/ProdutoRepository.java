@@ -17,5 +17,12 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @EntityGraph(attributePaths = {"categoria", "imagens"})
     Optional<Produto> findWithImagensById(Long id);
 
+    // --- Catálogo público (Sprint 2): só produtos ativos de categorias ativas ---
+    @EntityGraph(attributePaths = {"categoria", "imagens"})
+    List<Produto> findByAtivoTrueAndCategoria_AtivaTrueOrderByIdDesc();
+
+    @EntityGraph(attributePaths = {"categoria", "imagens"})
+    List<Produto> findByAtivoTrueAndCategoriaIdOrderByIdDesc(Long categoriaId);
+
     long countByCategoriaId(Long categoriaId);
 }

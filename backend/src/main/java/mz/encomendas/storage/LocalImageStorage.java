@@ -27,8 +27,15 @@ public class LocalImageStorage implements ImageStorage, WebMvcConfigurer {
     private final Path dir = Path.of("uploads").toAbsolutePath();
     private final String publicUrl;
 
-    public LocalImageStorage(@Value("${app.public-url:http://localhost:8080}") String publicUrl) {
+    public LocalImageStorage(@Value("${app.public-url:http://localhost:1111}") String publicUrl) {
         this.publicUrl = publicUrl.replaceAll("/+$", "");
+        try {
+            // A pasta tem de existir ao arrancar, senão o Spring não consegue servir as fotos (ver addResourceHandlers)
+            Files.createDirectories(dir);
+        } catch (IOException e) {
+            log.warn("Não foi possível criar a pasta de fotos {}", dir, e);
+        }
+        log.info("Fotos locais guardadas em {} e servidas em {}/uploads/", dir, this.publicUrl);
     }
 
     @Override
@@ -56,6 +63,9 @@ public class LocalImageStorage implements ImageStorage, WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**").addResourceLocations(dir.toUri().toString());
+        // O Spring só resolve ficheiros dentro de uma pasta se a localização terminar em "/"
+        String local = dir.toUri().toString();
+        if (!local.endsWith("/")) local += "/";
+        registry.addResourceHandler("/uploads/**").addResourceLocations(local);
     }
 }

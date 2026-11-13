@@ -35,4 +35,10 @@
   .badge-ok { @apply badge bg-green-100 text-green-800; }
   .badge-off { @apply badge bg-slate-200 text-slate-600; }
   .price { @apply font-bold text-accent-700; }
+  .skeleton { @apply animate-pulse rounded-md bg-slate-200; }
+}
+
+@layer utilities {
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }

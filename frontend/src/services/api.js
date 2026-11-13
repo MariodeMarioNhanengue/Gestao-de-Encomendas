@@ -8,7 +8,14 @@ export const clearToken = () => localStorage.removeItem(TOKEN_KEY)
 async function request(path, options = {}, auth = false) {
   const headers = { ...(options.headers || {}) }
   if (auth && getToken()) headers.Authorization = `Bearer ${getToken()}`
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers })
+  let res
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...options, headers })
+  } catch {
+    const e = new Error('Não foi possível ligar ao servidor. Verifique a ligação e tente novamente.')
+    e.status = 0
+    throw e
+  }
   if (res.status === 401 && auth) {
     clearToken()
     window.location.href = '/admin/login'
@@ -17,7 +24,9 @@ async function request(path, options = {}, auth = false) {
   const body = res.status === 204 ? null : await res.json().catch(() => null)
   if (!res.ok) {
     const campos = body?.campos ? ' ' + Object.values(body.campos).join('; ') : ''
-    throw new Error((body?.erro ?? `Erro ${res.status}`) + campos)
+    const e = new Error((body?.erro ?? `Erro ${res.status}`) + campos)
+    e.status = res.status
+    throw e
   }
   return body
 }
@@ -25,6 +34,20 @@ async function request(path, options = {}, auth = false) {
 export const api = (path, options) => request(path, options, false)
 export const adminApi = (path, options) => request(path, options, true)
 export const ping = () => api('/api/ping')
+
+// ---------- Catálogo público (Sprint 2) ----------
+let categoriasCache = null
+export const catalogo = {
+  // As categorias são pedidas por vários componentes (header, páginas); guardamos a promessa.
+  categorias: () => {
+    if (!categoriasCache) {
+      categoriasCache = api('/api/categories').catch((e) => { categoriasCache = null; throw e })
+    }
+    return categoriasCache
+  },
+  produtos: (slug) => api('/api/products' + (slug ? `?category=${encodeURIComponent(slug)}` : '')),
+  produto: (id) => api(`/api/products/${encodeURIComponent(id)}`),
+}
 
 const json = (method, data) => ({
   method,
@@ -52,4 +75,4 @@ export const produtosAdmin = {
 }
 
 export const formatMZN = (v) =>
-  new Intl.NumberFormat('pt-MZ', { style: 'currency', currency: 'MZN' }).format(v ?? 0)
+  new Intl.NumberFormat('pt-MZ', { style: 'currency', currency: 'MZN', useGrouping: 'always' }).format(v ?? 0)
